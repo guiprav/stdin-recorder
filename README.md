@@ -3,7 +3,9 @@ stdin-recorder
 
 stdin-recorder is a program that records stdin data with timing information in a file, allowing for later playback to stdout.
 
-I've written it because I wanted to store vim sessions in a way that I could later fine-tune simply by editing the session file. The session file is then played back and the whole terminal session is recorded using Asciinema.
+I've written it because I wanted to store vim sessions in a way that I could later fine-tune simply by editing the session file. The session file is then played back and the whole terminal session is recorded using [Asciinema.](https://asciinema.org)
+
+This is supposed to be used in conjunction with the tricks outlined in [Editing for Asciinema,](https://asciinema.org/a/7445) by [Micah Cowan.](http://micah.cowan.name)
 
 Usage
 -----
