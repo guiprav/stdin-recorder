@@ -12,6 +12,11 @@ Usage
 	$ # ... Then, after finishing the vim session ...
 	$ stdin-play how-to-vim | vim  # vim will receive stored data from file.
 
+Installation
+------------
+
+This program has no stable releases yet. To install, simply clone this repository and run `sudo npm install -g` from within the clone directory.
+
 Copying
 -------
 
