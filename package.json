@@ -1,0 +1,25 @@
+{
+  "name": "stdin-recorder",
+  "version": "0.0.0",
+  "description": "Record and playback stdin data with timing information.",
+  "bin": {
+    "stdin-rec": "./rec.js",
+	"stdin-play": "./play.js"
+  },
+  "preferGlobal": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/n2liquid/stdin-recorder"
+  },
+  "keywords": [
+    "terminal",
+    "stdin",
+    "recorder"
+  ],
+  "author": "Guilherme Prá Vieira",
+  "license": "GPL-3.0+",
+  "bugs": {
+    "url": "https://github.com/n2liquid/stdin-recorder/issues"
+  },
+  "homepage": "https://github.com/n2liquid/stdin-recorder"
+}
