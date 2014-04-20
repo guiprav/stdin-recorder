@@ -1,7 +1,8 @@
 stdin-recorder
 ==============
 
-stdin-recorder is a program that records stdin data with timing information in a file, allowing for later playback to stdout.
+stdin-recorder is a program that records stdin data with timing information in a file, and at the same time forwards it to stdout. The file can later be played back to stdout.
+
 
 I've written it because I wanted to store vim sessions in a way that I could later fine-tune simply by editing the session file. The session file is then played back and the whole terminal session is recorded using [Asciinema.](https://asciinema.org)
 
@@ -10,9 +11,15 @@ This is supposed to be used in conjunction with the tricks outlined in [Editing 
 Usage
 -----
 
+Syntatically, its usage looks like that of GNU Coreutils' [`tee` command,](https://www.gnu.org/software/coreutils/manual/html_node/tee-invocation.html) only the recording / playback commands are piped into other commands (e.g. a terminal text editor), instead of other commands being piped into them as in `tee` invocations.
+
     $ stdin-rec how-to-vim | vim  # Use vim normally, but also store stdin to file.
 	$ # ... Then, after finishing the vim session ...
 	$ stdin-play how-to-vim | vim  # vim will receive stored data from file.
+
+Compare to `tee` usage:
+
+    $ ls -la | tee directory-listing  # Shows directory listing on screen and saves to file.
 
 Installation
 ------------
