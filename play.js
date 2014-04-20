@@ -18,6 +18,8 @@
 'use strict';
 var fs = require('fs');
 var script = fs.readFileSync(process.argv[2], { encoding: 'utf8' });
+var speed = 1;
+var paused = false;
 function odd(number) {
 	return (number % 2 !== 0);
 }
@@ -69,13 +71,52 @@ script = (function() {
 	);
 	return result;
 })();
+process.stdin.setRawMode(true);
+process.stdin.resume();
+process.stdin.setEncoding('utf8');
+process.stdin.on (
+	'data', function(input) {
+		var small_change = (speed <= 1)? 0.1 : 2;
+		var big_change = (speed <= 1)? 0.15 : 3;
+		switch(input) {
+			case 'f':
+				speed += small_change;
+				break;
+			case 'F':
+				speed += big_change;
+				break;
+			case 's':
+				speed -= small_change;
+				break;
+			case 'S':
+				speed -= big_change;
+				break;
+			case 'd':
+				speed = 1;
+				break;
+			case 'p':
+				paused = !paused;
+				break;
+			case 'q':
+				process.exit();
+				break;
+		}
+		if(speed < 0) {
+			speed = small_change;
+		}
+		else
+		if(speed > 20) {
+			speed = 20;
+		}
+	}
+);
 (function() {
 	var timer = Date.now();
 	var i = 0;
 	function tick() {
 		var command = script[i];
 		var elapsed = (Date.now() - timer) / 1000;
-		if(elapsed > command.delay) {
+		if(!paused && elapsed > (command.delay / speed)) {
 			process.stdout.write(command.data, 'utf8');
 			timer = Date.now();
 			++i;
