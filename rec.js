@@ -22,22 +22,54 @@ process.stdin.setRawMode(true);
 process.stdin.resume();
 process.stdin.setEncoding('utf8');
 var timer = Date.now();
+var data = [];
+function flush() {
+    if(data.length === 0) {
+        return;
+    }
+    var delays = data.map(function(data) {
+        return data.d;
+    });
+    var string = data.map(function(data) {
+        return data.c;
+    }).join('');
+    fs.writeSync(file, 'd: ' + delays.join(' ') + '\n');
+    string.split('\n').forEach(function(line) {
+        fs.writeSync(file, 'l: ' + line + '\n');
+    });
+    data = [];
+}
 process.stdin.on (
 	'data', function(input) {
-		// ctrl-c ( end of text )
-		if(input === '\x03') {
-			fs.closeSync(file);
-			process.exit();
-		}
+        if(input === '\x04') {
+            flush();
+            process.exit();
+        }
 		input = input.replace('\x7f', '\b');
 		var delay = (Date.now() - timer) / 1000;
 		timer = Date.now();
-		var stored_input = input
-			.replace('\\', '\\\\')
-			.replace('\r', '\\r')
-			.replace('\n', '\\n')
-			.replace('|', '\\|');
-		fs.writeSync(file, '@' + delay + '\n|' + stored_input + '|\n');
+        var chars = input.split('');
+        for(var i = 0; i < chars.length; ++i) {
+            var first = (i === 0);
+            var c = chars[i];
+            var nc = chars[i + 1];
+            switch(c) {
+                case '\r':
+                    if(nc === '\n') {
+                        ++i;
+                    }
+                case '\n':
+                    data.push({ d: first? delay : 0, c: '\n' });
+                    flush();
+                    break;
+                default:
+                    data.push({ d: delay, c });
+                    if(c === '\x1b') {
+                        flush();
+                    }
+                    break;
+            }
+        }
 		process.stdout.write(input);
 	}
 );

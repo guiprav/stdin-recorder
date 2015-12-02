@@ -47,28 +47,44 @@ function parse_data_line(line, i) {
 		.replace('\\\\', '\\');
 }
 script = (function() {
+    var data_line = false;
 	var lines = script.split('\n');
-	var last_delay = null;
+	var delays;
 	var result = [];
-	lines.forEach (
-		function(line, i) {
-			if(line.length === 0 || line.match(/^(\t| )/)) {
-				return;
-			}
-			if(last_delay === null) {
-				last_delay = parse_delay_line(line, i);
-			}
-			else {
-				result.push (
-					{
-						delay: last_delay
-						, data: parse_data_line(line, i)
-					}
-				);
-				last_delay = null;
-			}
-		}
-	);
+    for(var i = 0; i < lines.length; ++i) {
+        var line = lines[i];
+
+        if(line === '') {
+            continue;
+        }
+
+        if(data_line && line.startsWith('d: ')) {
+            data_line = false;
+        }
+
+        if(!data_line) {
+            if(!line.startsWith('d: ')) {
+                throw new Error("Bad delays line: " + line);
+            }
+
+            delays = line.slice('d: '.length).split(' ').map(function(v) {
+                return parseFloat(v);
+            });
+
+            data_line = true;
+        }
+        else {
+            if(!line.startsWith('l: ')) {
+                throw new Error("Bad data line: " + line);
+            }
+
+            line = line.slice('l: '.length) || '\r';
+
+            line.split('').forEach(function(c, i) {
+                result.push({ delay: delays[i] || 0, data: c });
+            });
+        }
+    }
 	return result;
 })();
 process.stdin.setRawMode(true);
